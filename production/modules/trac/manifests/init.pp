@@ -8,6 +8,6 @@ class trac {
     require => Package['epel-release'],
   }
   include trac::conf
-  include trac::python
+  #include trac::python
   include trac::project
 }
