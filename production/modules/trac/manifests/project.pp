@@ -27,16 +27,7 @@ class trac::project {
   exec { 'trac_deploy_project':
     command => 'trac-admin /var/trac/trac_projects/svn deploy /var/trac/trac_projects/svn',
     unless  => 'cat /var/trac/trac_projects/svn/README',
-    require => Exec['trac_create_project'],
-  }
-  file { '/etc/httpd/conf.d/trac.conf':
-    ensure  => file,
-    source  => 'puppet:///modules/trac/trac.conf',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Class['trac'],
-    #notify  => Service['httpd'],
+    require => File['/var/trac/trac_projects/svn'],
   }
   file { '/var/trac/trac_projects/svn/cgi-bin/trac.wsgi':
     ensure  => present,
@@ -44,7 +35,7 @@ class trac::project {
     owner   => 'apache',
     group   => 'apache',
     mode    => '0644',
-    require => Class['trac::conf']
+    require => Exec['trac_deploy_project'],
   }
   file { '/var/trac/trac_projects/svn/conf/trac.ini':
     ensure  => present,
@@ -52,24 +43,33 @@ class trac::project {
     owner   => 'apache',
     group   => 'apache',
     mode    => '0644',
-    require => Exec['trac_create_project']
+    require => Exec['trac_deploy_project'],
+  }
+  file { '/etc/httpd/conf.d/trac.conf':
+    ensure  => file,
+    source  => 'puppet:///modules/trac/trac.conf',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Exec['trac_deploy_project'],
+    #notify  => Service['httpd'],
   }
   file { '/var/trac/users':
     ensure  => directory,
     owner   => 'apache',
     group   => 'apache',
     mode    => '0664',
-    require => Exec['trac_deploy_project']
+    require => File['/etc/httpd/conf.d/trac.conf'],
   }
   exec { 'trac_user':
     command => 'htpasswd -c -b /var/trac/users/htpasswd vchernov vchernov',
     unless  => 'cat /var/trac/users/htpasswd | grep vchernov',
-    require => Exec['trac_deploy_project'],
+    require => File['/var/trac/users'],
   }
   exec { 'another_trac_user':
     command => 'htpasswd -b /var/trac/users/htpasswd vboyko vboyko',
     unless  => 'cat /var/trac/users/htpasswd | grep vboyko',
-    require => Exec['trac_deploy_project'],
+    require => Exec['trac_user'],
     notify  => Service['httpd'],
   }
 }
