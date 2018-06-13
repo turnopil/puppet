@@ -26,7 +26,7 @@ class trac::project {
   }
   exec { 'trac_deploy_project':
     command => 'trac-admin /var/trac/trac_projects/svn deploy /var/trac/trac_projects/svn',
-    unless  => 'cat /var/trac/trac_projects/svn/README',
+    unless  => 'test -d "/var/trac/trac_projects/svn/cgi-bin"',
     require => File['/var/trac/trac_projects/svn'],
   }
   file { '/var/trac/trac_projects/svn/cgi-bin/trac.wsgi':
