@@ -2,8 +2,8 @@
 #
 #
 class svn::instance {
-  $svn_repo_name = $snv::svn_repo_name
-  $svn_envpath = '/var/svn/repositories'
+  $svn_repo_name = $svn::svn_repo_name
+  $svn_envpath = $svn::svn_envpath
   $svn_admin = $svn::svn_admin
   $svn_admin_pass = $svn::svn_admin_pass
   $svn_user = $svn::svn_user
@@ -21,9 +21,9 @@ class svn::instance {
   exec { 'svnadmin_create':
     command => "svnadmin create ${svn_envpath}/${svn_repo_name}",
     unless  => "test -d \"${svn_envpath}/${svn_repo_name}\"",
-    require => [File[$svn_envpath}], Class['svn']],
+    require => [File[$svn_envpath], Class['svn']],
   }
-  file { $svn_envpath/$svn_repo_name:
+  file { "$svn_envpath/$svn_repo_name":
     ensure  => directory,
     owner   => 'apache',
     group   => 'apache',

@@ -32,7 +32,7 @@ Exec {
     unless  => "test -d \"${trac_envpath}/${trac_project_name}\"",
     require => [File['/var/trac'], Class['trac']],
   }
-  file { $trac_envpath/$trac_project_name:
+  file { "$trac_envpath/$trac_project_name":
     ensure  => directory,
     owner   => 'apache',
     group   => 'apache',
@@ -43,7 +43,7 @@ Exec {
   exec { 'trac_deploy_project':
     command => "trac-admin ${trac_envpath}/${trac_project_name} deploy ${trac_envpath}/${trac_project_name}",
     unless  => "test -d \"${trac_envpath}/${trac_project_name}/cgi-bin\"",
-    require => File[$trac_envpath/$trac_project_name],
+    require => File["$trac_envpath/$trac_project_name"],
   }
   file { "${trac_envpath}/${trac_project_name}/cgi-bin/trac.wsgi":
     ensure  => present,
