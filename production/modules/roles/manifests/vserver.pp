@@ -2,6 +2,6 @@
 #
 #
 class roles::vserver {
-  # resources
+  include profiles::base
   include profiles::trac_svn
 }

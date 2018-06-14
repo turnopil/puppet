@@ -1,5 +1,5 @@
-WSGIScriptAlias /trac /var/trac/trac_projects/svn/cgi-bin/trac.wsgi
-<Directory /var/trac/trac_projects/svn/cgi-bin>
+WSGIScriptAlias /trac <%= @trac_envpath %>/<%= @trac_project_name %>/cgi-bin/trac.wsgi
+<Directory <%= @trac_envpath %>/<%= @trac_project_name %>/cgi-bin>
     WSGIApplicationGroup %{GLOBAL}
     Order deny,allow
     Allow from all

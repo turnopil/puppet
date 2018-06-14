@@ -2,11 +2,10 @@
 #
 #
 class httpd::ssl {
-
+  $redir_http = $httpd::redir_http
 package { 'mod_ssl':
   ensure => installed,
 }
-
 file { 'server.crt':
   ensure  => present,
   path    => '/etc/httpd/conf/server.crt',
@@ -16,7 +15,6 @@ file { 'server.crt':
   mode    => '0600',
   require => Package['mod_ssl'],
 }
-
 file { 'server.key':
   ensure  => present,
   path    => '/etc/httpd/conf/server.key',
@@ -26,11 +24,10 @@ file { 'server.key':
   mode    => '0600',
   require => Package['mod_ssl'],
 }
-
 file { 'ssl.conf':
   ensure  => file,
   path    => '/etc/httpd/conf.d/ssl.conf',
-  source  => 'puppet:///modules/httpd/ssl.conf',
+  content => template('httpd/ssl.conf.erb'),
   owner   => 'root',
   group   => 'root',
   mode    => '0640',

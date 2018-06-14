@@ -1,7 +1,7 @@
 import os
 
 #os.environ['TRAC_PARENT_ENV'] = '/var/trac'
-os.environ['TRAC_ENV'] = '/var/trac/trac_projects/svn'
+os.environ['TRAC_ENV'] = '<%= @trac_envpath %>/<%= @trac_project_name %>'
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 
 import trac.web.main

@@ -2,21 +2,37 @@
 #
 #
 class trac::project {
-  Exec {
-    path => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-  }
-  file { ['/var/trac', '/var/trac/trac_projects']:
+Exec {
+  path => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
+}
+  $db_type = $trac::db_type
+  $fulldbpath = $trac::fulldbpath
+  $trac_project_name = $trac::trac_project_name
+  $trac_envpath = $trac::trac_envpath
+  $svn_repo_name = $trac::svn_repo_name
+  $trac_admin = $trac::trac_admin
+  $trac_admin_pass = $trac::trac_admin_pass
+  $trac_user = $trac::trac_user
+  $trac_user_pass = $trac::trac_user_pass
+
+    if ($db_type == 'mysql') {
+      $db_uri = $fulldbpath
+    } elsif ($db_type == 'sqlite') {
+      $db_uri = 'sqlite:db/trac.db'
+    }
+
+  file { ['/var/trac', $trac_envpath]:
     ensure => directory,
     owner  => 'apache',
     group  => 'apache',
     mode   => '0664',
   }
   exec { 'trac_create_project':
-    command => 'trac-admin /var/trac/trac_projects/svn initenv \'svn\' mysql://trac:Pr0m#t3uS@10.128.130.20:3306/test',
-    unless  => 'test -d "/var/trac/trac_projects/svn"',
+    command => "trac-admin ${trac_envpath}/${trac_project_name} initenv \'${trac_project_name}\' ${db_uri}",
+    unless  => "test -d \"${trac_envpath}/${trac_project_name}\"",
     require => [File['/var/trac'], Class['trac']],
   }
-  file { '/var/trac/trac_projects/svn':
+  file { $trac_envpath/$trac_project_name:
     ensure  => directory,
     owner   => 'apache',
     group   => 'apache',
@@ -25,21 +41,21 @@ class trac::project {
     require => Exec['trac_create_project'],
   }
   exec { 'trac_deploy_project':
-    command => 'trac-admin /var/trac/trac_projects/svn deploy /var/trac/trac_projects/svn',
-    unless  => 'test -d "/var/trac/trac_projects/svn/cgi-bin"',
-    require => File['/var/trac/trac_projects/svn'],
+    command => "trac-admin ${trac_envpath}/${trac_project_name} deploy ${trac_envpath}/${trac_project_name}",
+    unless  => "test -d \"${trac_envpath}/${trac_project_name}/cgi-bin\"",
+    require => File[$trac_envpath/$trac_project_name],
   }
-  file { '/var/trac/trac_projects/svn/cgi-bin/trac.wsgi':
+  file { "${trac_envpath}/${trac_project_name}/cgi-bin/trac.wsgi":
     ensure  => present,
-    source  => 'puppet:///modules/trac/trac.wsgi',
+    content => template('trac/trac.wsgi.erb'),
     owner   => 'apache',
     group   => 'apache',
     mode    => '0644',
     require => Exec['trac_deploy_project'],
   }
-  file { '/var/trac/trac_projects/svn/conf/trac.ini':
+  file { "${trac_envpath}/${trac_project_name}/conf/trac.ini":
     ensure  => present,
-    source  => 'puppet:///modules/trac/trac.ini',
+    content => template('trac/trac.ini.erb'),
     owner   => 'apache',
     group   => 'apache',
     mode    => '0644',
@@ -47,7 +63,7 @@ class trac::project {
   }
   file { '/etc/httpd/conf.d/trac.conf':
     ensure  => file,
-    source  => 'puppet:///modules/trac/trac.conf',
+    content => template('trac/trac.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -62,13 +78,13 @@ class trac::project {
     require => File['/etc/httpd/conf.d/trac.conf'],
   }
   exec { 'trac_user':
-    command => 'htpasswd -c -b /var/trac/users/htpasswd vchernov vchernov',
-    unless  => 'cat /var/trac/users/htpasswd | grep vchernov',
+    command => "htpasswd -c -b /var/trac/users/htpasswd ${trac_admin} ${trac_admin_pass}",
+    unless  => "cat /var/trac/users/htpasswd | grep ${trac_admin}",
     require => File['/var/trac/users'],
   }
   exec { 'another_trac_user':
-    command => 'htpasswd -b /var/trac/users/htpasswd vboyko vboyko',
-    unless  => 'cat /var/trac/users/htpasswd | grep vboyko',
+    command => "htpasswd -b /var/trac/users/htpasswd ${trac_user} ${trac_user_pass}",
+    unless  => "cat /var/trac/users/htpasswd | grep ${trac_user}",
     require => Exec['trac_user'],
     notify  => Service['httpd'],
   }

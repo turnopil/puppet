@@ -80,7 +80,7 @@ admin_trac_url = .
 descr = My example project
 footer = Visit the Trac open source project at<br /><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>
 icon = common/trac.ico
-name = svn
+name = <%= @trac_project_name %>
 url = 
 
 [query]
@@ -166,7 +166,7 @@ auto_reload = False
 backup_dir = db
 base_url = 
 check_auth_ip = false
-database = mysql://trac:Pr0m#t3uS@10.128.130.20:3306/test
+database = <%= @db_uri %>
 debug_sql = False
 default_charset = iso-8859-15
 genshi_cache_size = 128
@@ -180,7 +180,7 @@ permission_policies = DefaultPermissionPolicy, LegacyAttachmentPolicy
 permission_store = DefaultPermissionStore
 pg_dump_path = pg_dump
 repository_dir = 
-repository_sync_per_request = (default),bazaarss
+repository_sync_per_request = (default),<%= @svn_repo_name %>
 repository_type = svn
 resizable_textareas = true
 secure_cookies = False

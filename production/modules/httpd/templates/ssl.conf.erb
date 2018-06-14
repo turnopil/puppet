@@ -1,6 +1,10 @@
+
+<% if @redir_http == 'true' %>
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^/(.*) https://%{SERVER_NAME}/$1 [R,L]
+<% end %>
+
 #
 # This is the Apache server configuration file providing SSL support.
 # It contains the configuration directives to instruct the server how to

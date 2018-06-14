@@ -4,10 +4,12 @@ LoadModule authz_svn_module   modules/mod_authz_svn.so
 
 <Location /subversion>
 DAV svn
-SVNPath "/var/svn/repositories/bazaarss"
+SVNPath "<%= @svn_envpath %>/<%= @svn_repo_name %>"
 AuthType Basic
 AuthName "Subversion repository"
-AuthUserFile /var/svn/repositories/users
+AuthUserFile <%= @svn_envpath %>/users
 Require valid-user
+<% if @ssl_install == 'true' %>
 SSLRequireSSL
+<% end %>
 </Location>

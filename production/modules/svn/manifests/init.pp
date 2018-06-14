@@ -1,7 +1,15 @@
 # Class: svn
 #
 #
-class svn {
+class svn (
+  $ssl_install = false,
+  $svn_envpath = '/var/svn/repositories'
+  $svn_repo_name = undef,
+  $svn_admin = undef,
+  $svn_admin_pass = undef,
+  $svn_user = undef,
+  $svn_user_pass = undef,
+) {
   package { 'subversion':
     ensure => installed,
   }
