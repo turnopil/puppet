@@ -9,7 +9,7 @@ class { 'httpd':
   }
 class { 'svn':
   ssl_install    => true,
-  svn_envpath    => '/var/svn/repositories'
+  svn_envpath    => '/var/svn/repositories',
   svn_repo_name  => 'bazaarss',
   svn_admin      => 'vchernov',
   svn_admin_pass => 'vchernov',
@@ -19,7 +19,7 @@ class { 'svn':
 class { 'trac':
   svn_repo_name     => 'bazaarss',
   db_type           => 'mysql',
-  fulldbpath        => 'mysql://trac:Pr0m#t3uS@10.128.130.20:3306/test'
+  fulldbpath        => 'mysql://trac:Pr0m#t3uS@10.128.130.20:3306/test',
   trac_project_name => 'svn',
   trac_envpath      => '/var/trac/trac_projects',
   trac_admin        => 'vchernov',

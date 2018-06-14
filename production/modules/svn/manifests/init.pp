@@ -3,7 +3,7 @@
 #
 class svn (
   $ssl_install = false,
-  $svn_envpath = '/var/svn/repositories'
+  $svn_envpath = '/var/svn/repositories',
   $svn_repo_name = undef,
   $svn_admin = undef,
   $svn_admin_pass = undef,
