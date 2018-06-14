@@ -9,7 +9,7 @@ AuthType Basic
 AuthName "Subversion repository"
 AuthUserFile <%= @svn_envpath %>/users
 Require valid-user
-<% if @ssl_install == 'true' %>
+<% if @ssl_install %>
 SSLRequireSSL
 <% end %>
 </Location>
