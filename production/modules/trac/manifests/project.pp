@@ -60,6 +60,7 @@ Exec {
     mode    => '0664',
     recurse => true,
     require => Exec['trac_create_project'],
+  }
   file { '/etc/httpd/conf.d/trac.conf':
     ensure  => file,
     content => template('trac/trac.conf.erb'),

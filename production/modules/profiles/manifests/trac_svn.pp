@@ -7,6 +7,8 @@ class profiles::trac_svn {
   $admin_pass = lookup('pass')
   $user_pass  = lookup('upass')
 class { 'httpd':
+  filecrt     => $filecrt,
+  filekey     => $filekey,
   ssl_install => true,
   redir_http  => true,
   }

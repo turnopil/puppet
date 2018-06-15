@@ -20,7 +20,7 @@ file { 'server.crt':
 file { 'server.key':
   ensure  => present,
   path    => '/etc/httpd/conf/server.key',
-  content => $filecrt,
+  content => $filekey,
   owner   => 'root',
   group   => 'root',
   mode    => '0600',
