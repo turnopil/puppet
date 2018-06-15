@@ -3,7 +3,9 @@
 #
 class httpd (
   $ssl_install = true,
-  $redir_http = true,
+  $redir_http  = true,
+  $filecrt     = undef,
+  $filekey     = undef,
 ) {
   package { 'httpd':
     ensure => installed,
