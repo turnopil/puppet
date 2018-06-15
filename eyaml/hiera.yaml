@@ -1,0 +1,25 @@
+---
+version: 5
+defaults:
+  # The default value for "datadir" is "data" under the same directory as the hiera.yaml
+  # file (this file)
+  # When specifying a datadir, make sure the directory exists.
+  # See https://puppet.com/docs/puppet/latest/environments_about.html for further details on environments.
+  datadir: data
+  data_hash: yaml_data
+hierarchy:
+  - name: "Secret data: per-node, per-datacenter, common"
+    lookup_key: eyaml_lookup_key # eyaml backend
+    paths:
+      - "nodes/%{facts.fqdn}.eyaml"
+      - "nodes/%{trusted.certname}.eyaml"  # Include explicit file extension
+      - "location/%{facts.whereami}.eyaml"
+      - "common.eyaml"
+    options:
+      pkcs7_private_key: /etc/puppetlabs/puppet/eyaml/keys/private_key.pkcs7.pem
+      pkcs7_public_key:  /etc/puppetlabs/puppet/eyaml/keys/public_key.pkcs7.pem
+  - name: "YAML hierarchy levels"
+    paths:
+      - "common.yaml"
+      - "nodes/%{facts.fqdn}.yaml"
+      - "nodes/%{::trusted.certname}.yaml"

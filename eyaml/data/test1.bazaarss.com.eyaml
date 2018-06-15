@@ -1,0 +1,8 @@
+files:
+‘/etc/httpd/conf/server.crt’:
+ensure : present
+mode : ‘0600’
+owner : ‘root’
+group : ‘root’
+content : ‘ENC[PKCS7,MIIB+wYJKoZI[..]C609Oc2QUvxARaw==]’
+
